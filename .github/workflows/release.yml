@@ -31,6 +31,6 @@ jobs:
             }]
           githubServer: false
       - name: Publish package
-        run: mvn -P github-packages -pl '!integration-tests,!integration-tests-2.2,!test-data' -DskipTests -B deploy
+        run: mvn -P github-packages -DskipTests -B deploy
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
