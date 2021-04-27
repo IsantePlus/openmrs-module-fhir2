@@ -53,6 +53,7 @@ import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.PersonName;
+import org.openmrs.module.fhir2.FhirConstants;
 import org.openmrs.module.fhir2.api.FhirGlobalPropertyService;
 import org.openmrs.module.fhir2.api.dao.FhirPersonDao;
 import org.openmrs.module.fhir2.api.translators.GenderTranslator;
@@ -65,7 +66,7 @@ import org.openmrs.module.fhir2.api.util.FhirUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PatientTranslatorImplTest {
-	
+
 	private static final String PATIENT_UUID = "123456-abcdef-123456";
 	
 	private static final String PATIENT_IDENTIFIER_UUID = "654321-fedcba-654321";
@@ -87,7 +88,9 @@ public class PatientTranslatorImplTest {
 	private static final String PERSON_ATTRIBUTE_VALUE = "254723723456";
 	
 	private static final Date PATIENT_DEATH_DATE = Date.from(Instant.ofEpochSecond(872986980L));
-	
+
+	public static final String DEFAULT_IDENTIFIER_SYSTEM = "http://openclientregistry.org/fhir/sourceid";
+
 	@Mock
 	private PatientIdentifierTranslator identifierTranslator;
 	
@@ -482,5 +485,15 @@ public class PatientTranslatorImplTest {
 		assertThat(result.getBirthDateElement().getPrecision(), equalTo(TemporalPrecisionEnum.MONTH));
 		assertThat(result.getBirthDateElement().getYear(), equalTo(dateType.getYear()));
 		assertThat(result.getBirthDateElement().getMonth(), equalTo(dateType.getMonth()));
+	}
+
+	@Test
+	public void shouldTranslatePatientWithSystemIdentifier() {
+		org.openmrs.Patient patient = new org.openmrs.Patient();
+
+		Patient result = patientTranslator.toFhirResource(patient);
+		assertThat(result.getIdentifier(), not(empty()));
+		assertThat(result.getIdentifier().get(0).getSystem(), equalTo(
+				globalPropertyService.getGlobalProperty(FhirConstants.GLOBAL_PROPERTY_IDENTIFIER_SYSTEM, DEFAULT_IDENTIFIER_SYSTEM)));
 	}
 }

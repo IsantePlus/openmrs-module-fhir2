@@ -119,8 +119,9 @@ public class PatientTranslatorImpl implements PatientTranslator {
 		for (PatientIdentifier identifier : openmrsPatient.getActiveIdentifiers()) {
 			patient.addIdentifier(identifierTranslator.toFhirResource(identifier));
 		}
-		
-		patient.addIdentifier().setSystem("urn:ietf:rfc:3986").setValue(
+
+		String identifierSystem = globalPropertyService.getGlobalProperty(FhirConstants.GLOBAL_PROPERTY_IDENTIFIER_SYSTEM, "http://openclientregistry.org/fhir/sourceid");
+		patient.addIdentifier().setSystem(identifierSystem).setValue(
 		    globalPropertyService.getGlobalProperty(FhirConstants.GLOBAL_PROPERTY_URI_PREFIX, "http://openmrs.org") + '/'
 		            + openmrsPatient.getUuid());
 		
