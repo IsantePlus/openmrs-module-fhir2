@@ -155,4 +155,9 @@
 		<description>Path of narrative override properties file</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>${project.parent.artifactId}.sourceIdentifierSystem</property>
+		<defaultValue>http://openclientregistry.org/fhir/sourceid</defaultValue>
+		<description>System for Patient identifier for OpenCR: Source Identifier System</description>
+	</globalProperty>
 </module>

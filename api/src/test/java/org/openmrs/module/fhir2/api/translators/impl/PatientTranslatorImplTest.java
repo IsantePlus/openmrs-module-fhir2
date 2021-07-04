@@ -89,6 +89,8 @@ public class PatientTranslatorImplTest {
 	
 	private static final Date PATIENT_DEATH_DATE = Date.from(Instant.ofEpochSecond(872986980L));
 	
+	private static final String DEFAULT_IDENTIFIER_SYSTEM = "http://openclientregistry.org/fhir/sourceid";
+
 	@Mock
 	private PatientIdentifierTranslator identifierTranslator;
 	
@@ -486,5 +488,15 @@ public class PatientTranslatorImplTest {
 		assertThat(result.getBirthDateElement().getPrecision(), equalTo(TemporalPrecisionEnum.MONTH));
 		assertThat(result.getBirthDateElement().getYear(), equalTo(dateType.getYear()));
 		assertThat(result.getBirthDateElement().getMonth(), equalTo(dateType.getMonth()));
+	}
+
+	@Test
+	public void shouldTranslatePatientWithSystemIdentifier() {
+		org.openmrs.Patient patient = new org.openmrs.Patient();
+
+		Patient result = patientTranslator.toFhirResource(patient);
+		assertThat(result.getIdentifier(), not(empty()));
+		assertThat(result.getIdentifier().get(0).getSystem(), equalTo(
+				globalPropertyService.getGlobalProperty(FhirConstants.GLOBAL_PROPERTY_IDENTIFIER_SYSTEM, DEFAULT_IDENTIFIER_SYSTEM)));
 	}
 }
