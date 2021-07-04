@@ -148,6 +148,12 @@ public class PatientTranslatorImpl implements PatientTranslator {
 			}
 		}
 		
+		// OpenCR Compatibility
+		String identifierSystem = globalPropertyService.getGlobalProperty(FhirConstants.GLOBAL_PROPERTY_IDENTIFIER_SYSTEM, "http://openclientregistry.org/fhir/sourceid");
+		patient.addIdentifier().setSystem(identifierSystem).setValue(
+		    globalPropertyService.getGlobalProperty(FhirConstants.GLOBAL_PROPERTY_URI_PREFIX, "http://openmrs.org") + '/'
+		            + openmrsPatient.getUuid());
+
 		for (HumanName name : patient.getName()) {
 			currentPatient.addName(nameTranslator.toOpenmrsType(name));
 		}
